@@ -51,6 +51,8 @@ export class DatabaseStorage implements IStorage {
     await db.insert(skills).values([
       { name: "React", category: "frontend", proficiency: 90 },
       { name: "TypeScript", category: "frontend", proficiency: 85 },
+      { name: "JavaScript", category: "frontend", proficiency: 95 },
+      { name: "Barba.js", category: "frontend", proficiency: 80 },
       { name: "Tailwind CSS", category: "frontend", proficiency: 95 },
       { name: "Node.js", category: "backend", proficiency: 80 },
       { name: "PostgreSQL", category: "backend", proficiency: 75 },

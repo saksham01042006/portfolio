@@ -1,13 +1,12 @@
-import { build as esbuild } from "esbuild";
+import { build } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { rm, readFile } from "node:fs/promises";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
 const allowlist = [
   "@google/generative-ai",
   "axios",
-  "connect-pg-simple",
   "cors",
   "date-fns",
   "drizzle-orm",
@@ -23,7 +22,6 @@ const allowlist = [
   "openai",
   "passport",
   "passport-local",
-  "pg",
   "stripe",
   "uuid",
   "ws",
@@ -46,7 +44,7 @@ async function buildAll() {
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-  await esbuild({
+  await build({
     entryPoints: ["server/index.ts"],
     platform: "node",
     bundle: true,

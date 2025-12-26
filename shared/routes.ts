@@ -1,4 +1,5 @@
 import { z } from 'zod';
+export * from './schema';
 import { insertMessageSchema, skills, projects, experience, education } from './schema';
 
 export const errorSchemas = {
