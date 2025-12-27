@@ -134,4 +134,133 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export class MemStorage implements IStorage {
+  private skills: Skill[] = [];
+  private projects: Project[] = [];
+  private experience: Experience[] = [];
+  private education: Education[] = [];
+  private messages: Message[] = [];
+  private idCounter = 1;
+
+  async getSkills(): Promise<Skill[]> {
+    return this.skills;
+  }
+
+  async getProjects(): Promise<Project[]> {
+    return this.projects;
+  }
+
+  async getProject(id: number): Promise<Project | undefined> {
+    return this.projects.find((p) => p.id === id);
+  }
+
+  async getExperience(): Promise<Experience[]> {
+    return this.experience;
+  }
+
+  async getEducation(): Promise<Education[]> {
+    return this.education;
+  }
+
+  async createMessage(message: InsertMessage): Promise<Message> {
+    const id = this.idCounter++;
+    const newMessage: Message = { ...message, id, createdAt: new Date() };
+    this.messages.push(newMessage);
+    return newMessage;
+  }
+
+  async seed(): Promise<void> {
+    if (this.skills.length > 0) return;
+
+    this.skills = [
+      { id: 1, name: "React", category: "frontend", proficiency: 90 },
+      { id: 2, name: "TypeScript", category: "frontend", proficiency: 85 },
+      { id: 3, name: "JavaScript", category: "frontend", proficiency: 95 },
+      { id: 4, name: "Barba.js", category: "frontend", proficiency: 80 },
+      { id: 5, name: "Tailwind CSS", category: "frontend", proficiency: 95 },
+      { id: 6, name: "Node.js", category: "backend", proficiency: 80 },
+      { id: 7, name: "PostgreSQL", category: "backend", proficiency: 75 },
+      { id: 8, name: "Python", category: "ai_ml", proficiency: 70 },
+      { id: 9, name: "TensorFlow", category: "ai_ml", proficiency: 60 },
+      { id: 10, name: "Git", category: "tools", proficiency: 85 },
+      { id: 11, name: "Docker", category: "tools", proficiency: 70 },
+    ];
+
+    this.projects = [
+      {
+        id: 1,
+        title: "AI-Powered Code Assistant",
+        description: "An intelligent coding companion that suggests optimizations in real-time.",
+        problemStatement: "Developers spend too much time looking up boilerplate code and best practices.",
+        techStack: ["Python", "TensorFlow", "React", "Node.js"],
+        challenges: "Minimizing latency for real-time inference was a major hurdle.",
+        solution: "Implemented a lightweight model and utilized WebSocket for streaming responses.",
+        outcome: "Reduced coding time by 30% for beta testers.",
+        githubLink: "https://github.com",
+        demoLink: "https://demo.com",
+        imageUrl: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80",
+      },
+      {
+        id: 2,
+        title: "E-Commerce Analytics Dashboard",
+        description: "A comprehensive dashboard for tracking sales and user engagement.",
+        problemStatement: "Small businesses lack accessible tools to visualize their data effectively.",
+        techStack: ["Vue.js", "D3.js", "Express", "MongoDB"],
+        challenges: "Handling large datasets without freezing the UI.",
+        solution: "Used web workers for data processing and virtualized lists for rendering.",
+        outcome: "Empowered 50+ local businesses to make data-driven decisions.",
+        githubLink: "https://github.com",
+        demoLink: "https://demo.com",
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+      },
+      {
+        id: 3,
+        title: "Social Media Sentiment Analyzer",
+        description: "Analyze brand sentiment across multiple social platforms.",
+        problemStatement: "Brands struggle to track public perception in real-time.",
+        techStack: ["Python", "NLP", "React", "FastAPI"],
+        challenges: "Filtering out spam and irrelevant bot traffic.",
+        solution: "Developed a custom NLP pipeline to classify sentiment with 85% accuracy.",
+        outcome: "Helped brands respond to PR crises 2x faster.",
+        githubLink: "https://github.com",
+        demoLink: "https://demo.com",
+        imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+      }
+    ];
+
+    this.experience = [
+      {
+        id: 1,
+        role: "Senior Full Stack Developer",
+        company: "TechNova Solutions",
+        duration: "2023 - Present",
+        description: "Leading a team of 5 developers to build scalable SaaS products. Architected a microservices backend handling 10k+ concurrent users.",
+      },
+      {
+        id: 2,
+        role: "Frontend Developer",
+        company: "Creative Pixel Agency",
+        duration: "2021 - 2023",
+        description: "Collaborated with designers to implement pixel-perfect UIs. Improved site performance scores by 40% through code splitting and lazy loading.",
+      },
+    ];
+
+    this.education = [
+      {
+        id: 1,
+        degree: "B.S. Computer Science",
+        institution: "University of Technology",
+        year: "2021",
+      },
+      {
+        id: 2,
+        degree: "Certified Cloud Practitioner",
+        institution: "AWS Certification",
+        year: "2022",
+      },
+    ];
+  }
+}
+
+const useMemStorage = process.env.VERCEL === "1" || process.env.USE_MEM_STORAGE === "true";
+export const storage = useMemStorage ? new MemStorage() : new DatabaseStorage();
