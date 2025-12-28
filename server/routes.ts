@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
+import { initializeDb } from "./db";
 import { api } from "@shared/routes";
 import { z } from "zod";
 
@@ -8,6 +9,9 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Initialize database if needed
+  await initializeDb();
+
   // Seed the database on startup
   await storage.seed();
 
